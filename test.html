@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+</head>
+<body>
+   <h1>REST API Test</h1>
+    
+    <button onclick="getUsers()">Get Users</button>
+    <button onclick="MoreThanOne()">Create MoreThanOne User (20 user per click)</button>
+	<button onclick="OneUserAtTime()">Create OneUserAtTime</button>
+    <button onclick="updateUser(1)">Update User (ID 1)</button>
+    <button onclick="deleteUser(1)">Delete User (ID 1)</button>
+
+    <script>
+  const baseUrl = 'http://localhost:9002';
+
+        // GET request to fetch users
+        const getUsers = async () => {
+            try {
+                const response = await fetch(`${baseUrl}/users`);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const data = await response.json();
+                console.log('GET Users:', data);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+		
+		 // POST request to create a new user (OneUserAtTime)
+        const OneUserAtTime = async () => {
+            const payload = {
+                name: "New User",
+                email: "newuser@example.com"
+            };
+
+            try {
+                const response = await fetch(`${baseUrl}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const newUser = await response.json();
+                console.log('User created:', newUser);
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        };
+
+  // POST request to create a Create new MoreThanOne User (20 user per click)
+   const MoreThanOne = async () => {
+       const payload = {
+    name: "John Doe",
+    email: "john.doe@example.com"
+};
+
+for (let i = 0; i < 20; i++) {
+    fetch(`${baseUrl}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+}
+};
+
+        // PUT request to update an existing user
+        const updateUser = async (id) => {
+            const payload = {
+                name: "Updated Name",
+                email: "updated.email@example.com"
+            };
+
+            try {
+                const response = await fetch(`${baseUrl}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const updatedUser = await response.json();
+                console.log('User updated:', updatedUser);
+            } catch (error) {
+                console.error('Error updating user:', error);
+            }
+        };
+
+        // DELETE request to remove a user
+        const deleteUser = async (id) => {
+            try {
+                const response = await fetch(`${baseUrl}/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                console.log(`User with ID ${id} deleted successfully.`);
+            } catch (error) {
+                console.error('Error deleting user:', error);
+            }
+        };
+
+    </script>
+    
+   
+
+</body>
+</html>
+
